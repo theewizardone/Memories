@@ -1,15 +1,41 @@
 import React, { useEffect, useState } from "react";
 import { Container, AppBar, Typography, Grow, Grid } from "@mui/material";
-import memories from './images/memories.jpg';
-import { getPosts } from "./actions/posts";
-import Posts from './components/Posts/Posts';
-import Form from './components/Form/Form';
-import useStyles from './styles'; // Ensure styles.js uses @mui/styles
+import { styled } from "@mui/material/styles";
 import { useDispatch } from "react-redux";
+import memories from "./images/memories.jpg";
+import { getPosts } from "./actions/posts";
+import Posts from "./components/Posts/Posts";
+import Form from "./components/Form/Form";
+
+// Styled Components
+const StyledAppBar = styled(AppBar)(({ theme }) => ({
+  borderRadius: 15,
+  margin: "30px 0",
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "center",
+  alignItems: "center",
+  padding: "10px",
+}));
+
+const StyledHeading = styled(Typography)(({ theme }) => ({
+  color: "rgba(0,183,255, 1)",
+}));
+
+const StyledImage = styled("img")({
+  marginLeft: "15px",
+});
+
+const StyledContainer = styled(Container)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "row",
+  [theme.breakpoints.down("sm")]: {
+    flexDirection: "column-reverse",
+  },
+}));
 
 const App = () => {
   const [currentId, setCurrentId] = useState(null);
-  const classes = useStyles();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -18,23 +44,24 @@ const App = () => {
 
   return (
     <Container maxWidth="lg">
-      <AppBar className={classes.appBar} position="static" color="inherit">
-        <Typography className={classes.heading} variant="h2" align="center">
+      <StyledAppBar position="static" color="inherit">
+        <StyledHeading variant="h2" align="center">
           Memories
-        </Typography>
-        <img className={classes.image} src={memories} alt="memories" height="60" />
-      </AppBar>
+        </StyledHeading>
+        <StyledImage src={memories} alt="memories" height="60" />
+      </StyledAppBar>
       <Grow in>
-        <Container>
-          <Grid  className={classes.mainContainer} container  justifyContent="space-between" alignItems="stretch" spacing={3}>
+        {/* ✅ Using StyledContainer to fix the warning */}
+        <StyledContainer>
+          <Grid container justifyContent="space-between" alignItems="stretch" spacing={3}>
             <Grid item xs={12} sm={7}>
               <Posts setCurrentId={setCurrentId} />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <Form currentId={currentId}/>
+              <Form currentId={currentId} setCurrentId={setCurrentId} />
             </Grid>
           </Grid>
-        </Container>
+        </StyledContainer>
       </Grow>
     </Container>
   );

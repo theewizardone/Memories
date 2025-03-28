@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Typography, Paper } from '@mui/material';
+import { TextField, Button, Typography, } from '@mui/material';
 import FileBase from 'react-file-base64';
 import { useDispatch, useSelector } from 'react-redux';
 import { createPost, updatePost } from '../../actions/posts';
-import useStyles from './styles'; // Ensure correct import path
+import { StyledFileInput, StyledForm, StyledPaper, StyledSubmitButton } from './styles';
 
 const Form = ({ currentId, setCurrentId }) => {
   const [postData, setPostData] = useState({
@@ -19,22 +19,21 @@ const Form = ({ currentId, setCurrentId }) => {
   );
 
   const dispatch = useDispatch();
-  const classes = useStyles();
 
   useEffect(() => {
     if (post) setPostData(post);
-  }, [post]); // Correctly formatted dependency array
+  }, [post]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (currentId) {
-      dispatch(updatePost(currentId, postData)); // Updating existing post
+      dispatch(updatePost(currentId, postData));
     } else {
-      dispatch(createPost(postData)); // Creating a new post
+      dispatch(createPost(postData));
     }
 
-    clear(); // Clear the form after submitting
+    clear();
   };
 
   const clear = () => {
@@ -49,13 +48,8 @@ const Form = ({ currentId, setCurrentId }) => {
   };
 
   return (
-    <Paper className={classes.paper}>
-      <form
-        autoComplete="off"
-        noValidate
-        className={`${classes.root} ${classes.form}`}
-        onSubmit={handleSubmit}
-      >
+    <StyledPaper>
+      <StyledForm autoComplete="off" noValidate onSubmit={handleSubmit}>
         <Typography variant="h6">
           {currentId ? 'Editing' : 'Creating'} a Memory
         </Typography>
@@ -93,7 +87,7 @@ const Form = ({ currentId, setCurrentId }) => {
           value={postData.tags}
           onChange={(e) => setPostData({ ...postData, tags: e.target.value.split(',') })}
         />
-        <div className={classes.fileInput}>
+        <StyledFileInput>
           <FileBase
             type="file"
             multiple={false}
@@ -101,32 +95,17 @@ const Form = ({ currentId, setCurrentId }) => {
               setPostData({ ...postData, selectedFile: base64 })
             }
           />
-        </div>
-        <Button
-          className={classes.buttonSubmit}
-          variant="contained"
-          color="primary"
-          size="large"
-          type="submit"
-          fullWidth
-        >
+        </StyledFileInput>
+        <StyledSubmitButton variant="contained" color="primary" size="large" type="submit" fullWidth>
           Submit
-        </Button>
-        <Button
-          variant="contained"
-          color="secondary"
-          size="small"
-          onClick={clear}
-          fullWidth
-        >
+        </StyledSubmitButton>
+        <Button variant="contained" color="secondary" size="small" onClick={clear} fullWidth>
           Clear
         </Button>
-      </form>
-    </Paper>
+      </StyledForm>
+    </StyledPaper>
   );
 };
 
 export default Form;
-
-
 
